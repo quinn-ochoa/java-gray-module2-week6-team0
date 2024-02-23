@@ -10,7 +10,14 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 
+
+
 public class JdbcReservationDaoTests extends BaseDaoTests {
+
+    private static final Reservation RESERVATION_1 = new Reservation(1, 1, "Amy Adams", LocalDate.now().minusDays(18),
+                                                    LocalDate.now().minusDays(11), LocalDate.now().minusDays(23));
+    private static final Reservation RESERVATION_2 = new Reservation(2, 1, "Bob Billings", LocalDate.now().minusDays(2),
+                                                    LocalDate.now().minusDays(1), LocalDate.now().minusDays(3));
 
     private ReservationDao dao;
 
@@ -21,7 +28,11 @@ public class JdbcReservationDaoTests extends BaseDaoTests {
 
     @Test
     public void getReservationById_Should_Return_Specific_Reservation() {
-        Assert.fail();
+        Reservation reservation = dao.getReservationById(1);
+        assertReservationsMatch(RESERVATION_1, reservation);
+
+        reservation = dao.getReservationById(2);
+        assertReservationsMatch(RESERVATION_2, reservation);
     }
 
     @Test
@@ -37,6 +48,17 @@ public class JdbcReservationDaoTests extends BaseDaoTests {
         Reservation reservationCreated = dao.createReservation(reservation);
 
         assertEquals("Incorrect ID of new reservation", 13, reservationCreated.getReservationId());
+
+    }
+
+    private void assertReservationsMatch (Reservation expected, Reservation actual) {
+
+        Assert.assertEquals(expected.getReservationId(), actual.getReservationId());
+        Assert.assertEquals(expected.getSiteId(), actual.getSiteId());
+        Assert.assertEquals(expected.getName(), actual.getName());
+        Assert.assertEquals(expected.getFromDate(), actual.getFromDate());
+        Assert.assertEquals(expected.getToDate(), actual.getToDate());
+        Assert.assertEquals(expected.getCreateDate(), actual.getCreateDate());
 
     }
 

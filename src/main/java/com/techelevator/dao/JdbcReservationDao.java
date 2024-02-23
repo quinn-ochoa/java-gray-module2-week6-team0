@@ -1,6 +1,8 @@
 package com.techelevator.dao;
 
+import com.techelevator.exception.DaoException;
 import com.techelevator.model.Reservation;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -16,14 +18,39 @@ public class JdbcReservationDao implements ReservationDao {
 
     @Override 
     public Reservation getReservationById(int id) {
+        Reservation reservation = null;
+        String sql = "SELECT * FROM reservation WHERE reservation_id = ?;";
 
-        return null;
+        try{
+
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+            if(results.next()) {
+                reservation = mapRowToReservation(results);
+            }
+
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return reservation;
     }
 
     @Override
     public Reservation createReservation(Reservation reservation) {
+        Reservation newReservation = null;
+        String sql = "INSERT INTO reservation(site_id, name, from_date, to_date, create_date) " +
+                    "VALUES (?, ?, ?, ?, ?) RETURNING reservation_id;";
 
-        return new Reservation();
+        try{
+
+            int newReservationId = jdbcTemplate.queryForObject(sql, int.class, reservation.getSiteId(), reservation.getName(),
+                                    reservation.getFromDate(), reservation.getToDate(), reservation.getCreateDate());
+            newReservation = getReservationById(newReservationId);
+
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+
+        return newReservation;
     }
 
     private Reservation mapRowToReservation(SqlRowSet results) {
