@@ -1,92 +1,64 @@
-# Week-6-Pairs
+# Week 2 Review: National Park Campsite (Part 2)
 
+In this exercise, you'll continue working with the National Park Campsite Reservation database. 
 
+You'll create DAO methods and integration tests to continue practicing writing application code that interacts with a database.
 
 ## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+1. If you do not have a database named `campground`, create it now.
+2. In the `database` folder, there's a `campground.sql` SQL script that drops and recreates the tables and data in the `campground` database. You can run that script to create a copy of the database to reference while you work. Be aware, however, that the tests don't use that database. The tests use a temporary database with the same structure. You'll find the SQL for that temporary database in `src/test/resources/test-data.sql`.
+3. Open the DAO exercises project in IntelliJ.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Step One: Explore starting code and database schema
 
-## Add your files
+Before you begin, review the provided classes in the `model` and `dao` packages.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+You'll write code to complete and test the data access methods in the `JdbcCampgroundDao`, `JdbcParkDao`, `JdbcReservationDao`, and `JdbcSiteDao` classes.
 
-```
-cd existing_repo
-git remote add origin https://git.techelevator.com/campuses/nlr/jan-2024/java-gray/student-pairs/week-6-pairs.git
-git branch -M main
-git push -uf origin main
-```
+You can explore the database in pgAdmin, read through the `database/campground.sql`, and view the provided ERD diagram in the `database` folder to familiarize yourself with the database and its schema.
 
-## Integrate with your tools
+The integration tests are in the directory `src/test/java/com/techelevator/dao`. There's a `BaseDaoTests` class that all other test classes inherit from. This base class along with the `TestingDatabaseConfig` class take care of the following:
 
-- [ ] [Set up project integrations](https://git.techelevator.com/campuses/nlr/jan-2024/java-gray/student-pairs/week-6-pairs/-/settings/integrations)
+- Creates a new temporary database and a `DataSource` connection to it.
+- Loads test data.
+- Rolls back any changes to the temporary database after each test has completed.
+- Drops the temporary database after all tests have completed.
 
-## Collaborate with your team
+## Step Two: Implement the `JdbcCampgroundDao` methods
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Complete the data access methods in `JdbcCampgroundDao`: `getCampgroundById()` and `getCampgroundsByParkId()`. Refer to the documentation comments in the `CampgroundDao` interface for the expected input and output of these methods.
 
-## Test and Deploy
+When you have `getCampgroundById()` implemented correctly, the `getCampgroundById_Should_Return_Specific_Campground` integration test passes.
 
-Use the built-in continuous integration in GitLab.
+You'll need to write the integration test for `getCampgroundsByParkId()`. Find the `getCampgroundsByParkId_Should_Return_All_Campgrounds_For_Park` integration test and replace the `Assert.fail()` with an integration test that verifies your method functions properly.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Use the data in the `resources/test-data.sql` file to create your integration test.
 
-***
+## Step Three: Implement the `JdbcParkDao` methods
 
-# Editing this README
+Complete the data access method in `JdbcParkDao`: `getParks()`. Refer to the documentation comments in the `ParkDao` interface for the expected input and output of this method.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+You'll need to write the integration test for `getParks()`. Find the `getParks_Should_Return_All_Parks` integration test and replace the `Assert.fail()` with an integration test that verifies your method functions properly.
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Use the data in the `resources/test-data.sql` file to create your integration test.
 
-## Name
-Choose a self-explaining name for your project.
+## Step Four: Implement the `JdbcReservationDao` methods
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+There are two methods to implement in `JdbcReservationDao`: `getReservationById()` and `createReservation()`. Refer to the documentation comments in the `ReservationDao` interface for the expected input and output of these methods.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+When you have `createReservation()` implemented correctly, the `createReservation_Should_Return_Reservation_With_New_Id` integration test passes.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+You'll need to write the integration test for `getReservationById()`. Find the `getReservationById_Should_Return_Specific_Reservation` integration test and replace the `Assert.fail()` with an integration test that verifies your method functions properly.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Use the data in the `resources/test-data.sql` file to create your integration test.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## Step Five: Implement the `JdbcSiteDao` methods
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+There are two methods to implement in `JdbcSiteDao`: `getSitesWithRVAccessByParkId()` and `getSitesAvailableTodayByParkId()`. Refer to the documentation comments in the `SiteDao` interface for the expected input and output of these methods.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+When you have `getSitesAvailableTodayByParkId()` implemented correctly, the `getSitesAvailableTodayByParkId_Should_Return_Available_Parks` integration test passes.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+You'll need to write the integration test for `getSitesWithRVAccessByParkId()`. Find the `getSitesWithRVAccessByParkId_Should_Return_Sites_With_Positive_RV_Length` integration test and replace the `Assert.fail()` with an integration test that verifies your method functions properly.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Use the data in the `resources/test-data.sql` file to create your integration test.
